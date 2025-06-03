@@ -5,7 +5,11 @@ export const createCategorySchema = z.object({
   color: z.string().min(4, "color is required").max(7, "color is too long"),
 });
 
-export const updateCategorySchema = createCategorySchema.partial();
+export const updateCategorySchema = createCategorySchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+  });
 
 export const categorySchema = createCategorySchema.extend({
   id: z.string().min(1),
