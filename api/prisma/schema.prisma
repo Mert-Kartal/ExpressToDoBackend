@@ -44,7 +44,7 @@ model Todo {
   id          String    @id @default(uuid())
   userId      String
   title       String    @unique //required
-  description String
+  description String?
   status      Status    @default(PENDING)
   priority    Priority  @default(MEDIUM)
   dueDate     DateTime
