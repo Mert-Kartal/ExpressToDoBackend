@@ -2,7 +2,7 @@ import prisma from "../config/db";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../types/todoType";
 
 export class TodoRepository {
-  async getTodos(): Promise<TodoData[]> {
+  static async getTodos(): Promise<TodoData[]> {
     try {
       return await prisma.todo.findMany({ where: { deletedAt: null } });
     } catch (error) {
@@ -10,7 +10,7 @@ export class TodoRepository {
     }
   }
 
-  async getTodo(id: string): Promise<TodoData | null> {
+  static async getTodo(id: string): Promise<TodoData | null> {
     try {
       return await prisma.todo.findUnique({
         where: {
@@ -23,7 +23,7 @@ export class TodoRepository {
     }
   }
 
-  async createTodo(data: CreateTodoData): Promise<TodoData> {
+  static async createTodo(data: CreateTodoData): Promise<TodoData> {
     try {
       return await prisma.todo.create({
         data,
@@ -33,7 +33,7 @@ export class TodoRepository {
     }
   }
 
-  async updateTodo(id: string, data: UpdateTodoData): Promise<TodoData> {
+  static async updateTodo(id: string, data: UpdateTodoData): Promise<TodoData> {
     try {
       return await prisma.todo.update({
         where: {
@@ -47,7 +47,7 @@ export class TodoRepository {
     }
   }
 
-  async deleteTodo(id: string): Promise<TodoData> {
+  static async deleteTodo(id: string): Promise<TodoData> {
     try {
       return await prisma.todo.update({
         where: {

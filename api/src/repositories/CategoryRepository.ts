@@ -6,7 +6,7 @@ import {
 } from "src/types/categoryType";
 
 export class CategoryRepository {
-  async getCategories(): Promise<CategoryData[]> {
+  static async getCategories(): Promise<CategoryData[]> {
     try {
       return await prisma.category.findMany();
     } catch (error) {
@@ -14,7 +14,7 @@ export class CategoryRepository {
     }
   }
 
-  async getCategory(id: string): Promise<CategoryData | null> {
+  static async getCategory(id: string): Promise<CategoryData | null> {
     try {
       return await prisma.category.findUnique({
         where: {
@@ -26,7 +26,7 @@ export class CategoryRepository {
     }
   }
 
-  async createCategory(data: CreateCategoryData): Promise<CategoryData> {
+  static async createCategory(data: CreateCategoryData): Promise<CategoryData> {
     try {
       return await prisma.category.create({
         data,
@@ -36,7 +36,7 @@ export class CategoryRepository {
     }
   }
 
-  async updateCategory(
+  static async updateCategory(
     id: string,
     data: UpdateCategoryData
   ): Promise<CategoryData> {
@@ -52,7 +52,7 @@ export class CategoryRepository {
     }
   }
 
-  async deleteCategory(id: string): Promise<CategoryData> {
+  static async deleteCategory(id: string): Promise<CategoryData> {
     try {
       return await prisma.category.delete({
         where: {
@@ -64,7 +64,7 @@ export class CategoryRepository {
     }
   }
 
-  async getCategoryTodos(id: string) {
+  static async getCategoryTodos(id: string) {
     try {
       return await prisma.todoCategory.findMany({
         where: {

@@ -2,7 +2,7 @@ import prisma from "../config/db";
 import { CreateUserData, UpdateUserData, UserData } from "../types/userType";
 
 export class UserRepository {
-  async getUsers(): Promise<UserData[]> {
+  static async getUsers(): Promise<UserData[]> {
     try {
       return await prisma.user.findMany({ where: { deletedAt: null } });
     } catch (error) {
@@ -11,7 +11,7 @@ export class UserRepository {
     }
   }
 
-  async getUser(id: string): Promise<UserData | null> {
+  static async getUser(id: string): Promise<UserData | null> {
     try {
       return await prisma.user.findUnique({
         where: {
@@ -25,7 +25,7 @@ export class UserRepository {
     }
   }
 
-  async createUser(data: CreateUserData): Promise<UserData> {
+  static async createUser(data: CreateUserData): Promise<UserData> {
     try {
       return await prisma.user.create({
         data,
@@ -35,7 +35,7 @@ export class UserRepository {
       throw new Error((error as Error).message);
     }
   }
-  async updateUser(id: string, data: UpdateUserData): Promise<UserData> {
+  static async updateUser(id: string, data: UpdateUserData): Promise<UserData> {
     try {
       return await prisma.user.update({
         where: {
@@ -49,7 +49,7 @@ export class UserRepository {
     }
   }
 
-  async deleteUser(id: string): Promise<UserData> {
+  static async deleteUser(id: string): Promise<UserData> {
     try {
       return await prisma.user.update({
         where: {
