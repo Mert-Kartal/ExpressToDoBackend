@@ -6,8 +6,7 @@ export class UserRepository {
     try {
       return await prisma.user.findMany({ where: { deletedAt: null } });
     } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -20,8 +19,7 @@ export class UserRepository {
         },
       });
     } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -31,8 +29,7 @@ export class UserRepository {
         data,
       });
     } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
   static async updateUser(id: string, data: UpdateUserData): Promise<UserData> {
@@ -44,8 +41,7 @@ export class UserRepository {
         data,
       });
     } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -60,8 +56,7 @@ export class UserRepository {
         },
       });
     } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 }

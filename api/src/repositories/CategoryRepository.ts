@@ -1,16 +1,17 @@
+import { Todo } from "@prisma/client";
 import prisma from "../config/db";
 import {
   CreateCategoryData,
   UpdateCategoryData,
   CategoryData,
-} from "src/types/categoryType";
+} from "../types/categoryType";
 
 export class CategoryRepository {
   static async getCategories(): Promise<CategoryData[]> {
     try {
       return await prisma.category.findMany();
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -22,7 +23,7 @@ export class CategoryRepository {
         },
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -32,7 +33,7 @@ export class CategoryRepository {
         data,
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -48,7 +49,7 @@ export class CategoryRepository {
         data,
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -60,7 +61,7 @@ export class CategoryRepository {
         },
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -75,7 +76,7 @@ export class CategoryRepository {
         },
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 }

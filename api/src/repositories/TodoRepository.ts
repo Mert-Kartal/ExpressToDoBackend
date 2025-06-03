@@ -6,7 +6,7 @@ export class TodoRepository {
     try {
       return await prisma.todo.findMany({ where: { deletedAt: null } });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -19,7 +19,7 @@ export class TodoRepository {
         },
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -29,7 +29,7 @@ export class TodoRepository {
         data,
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -43,7 +43,7 @@ export class TodoRepository {
         data,
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 
@@ -58,7 +58,7 @@ export class TodoRepository {
         },
       });
     } catch (error) {
-      throw new Error((error as Error).message);
+      throw error;
     }
   }
 }

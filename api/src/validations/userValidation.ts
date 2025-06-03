@@ -1,17 +1,21 @@
 import { z } from "zod";
 
-export const updateUserSchema = z.object({
-  name: z
-    .string()
-    .min(1, "name is required")
-    .max(100, "name is too long")
-    .optional(),
-  username: z
-    .string()
-    .min(1, "username is required")
-    .max(100, "username is too long")
-    .optional(),
-});
+export const updateUserSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, "name is required")
+      .max(100, "name is too long")
+      .optional(),
+    username: z
+      .string()
+      .min(1, "username is required")
+      .max(100, "username is too long")
+      .optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+  });
 
 // export const changePasswordSchema = z.object({
 //   password: z
