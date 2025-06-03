@@ -7,75 +7,51 @@ import {
 
 export class CategoryRepository {
   static async getCategories(): Promise<CategoryData[]> {
-    try {
-      return await prisma.category.findMany();
-    } catch (error) {
-      throw error;
-    }
+    return await prisma.category.findMany();
   }
 
   static async getCategory(id: string): Promise<CategoryData | null> {
-    try {
-      return await prisma.category.findUnique({
-        where: {
-          id,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await prisma.category.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
   static async createCategory(data: CreateCategoryData): Promise<CategoryData> {
-    try {
-      return await prisma.category.create({
-        data,
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await prisma.category.create({
+      data,
+    });
   }
 
   static async updateCategory(
     id: string,
     data: UpdateCategoryData
   ): Promise<CategoryData> {
-    try {
-      return await prisma.category.update({
-        where: {
-          id,
-        },
-        data,
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await prisma.category.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
   static async deleteCategory(id: string): Promise<CategoryData> {
-    try {
-      return await prisma.category.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await prisma.category.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   static async getCategoryTodos(id: string) {
-    try {
-      return await prisma.todoCategory.findMany({
-        where: {
-          categoryId: id,
-        },
-        include: {
-          Todo: true,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await prisma.todoCategory.findMany({
+      where: {
+        categoryId: id,
+      },
+      include: {
+        Todo: true,
+      },
+    });
   }
 }
