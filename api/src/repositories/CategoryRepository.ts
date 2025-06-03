@@ -7,51 +7,75 @@ import {
 
 export class CategoryRepository {
   async getCategories(): Promise<CategoryData[]> {
-    return await prisma.category.findMany();
+    try {
+      return await prisma.category.findMany();
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   async getCategory(id: string): Promise<CategoryData | null> {
-    return await prisma.category.findUnique({
-      where: {
-        id,
-      },
-    });
+    try {
+      return await prisma.category.findUnique({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   async createCategory(data: CreateCategoryData): Promise<CategoryData> {
-    return await prisma.category.create({
-      data,
-    });
+    try {
+      return await prisma.category.create({
+        data,
+      });
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   async updateCategory(
     id: string,
     data: UpdateCategoryData
   ): Promise<CategoryData> {
-    return await prisma.category.update({
-      where: {
-        id,
-      },
-      data,
-    });
+    try {
+      return await prisma.category.update({
+        where: {
+          id,
+        },
+        data,
+      });
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   async deleteCategory(id: string): Promise<CategoryData> {
-    return await prisma.category.delete({
-      where: {
-        id,
-      },
-    });
+    try {
+      return await prisma.category.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 
   async getCategoryTodos(id: string) {
-    return await prisma.todoCategory.findMany({
-      where: {
-        categoryId: id,
-      },
-      include: {
-        Todo: true,
-      },
-    });
+    try {
+      return await prisma.todoCategory.findMany({
+        where: {
+          categoryId: id,
+        },
+        include: {
+          Todo: true,
+        },
+      });
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 }

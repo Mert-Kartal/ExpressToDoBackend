@@ -13,16 +13,16 @@ export const updateUserSchema = z.object({
     .optional(),
 });
 
-export const changePasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8, "password is too short")
-    .max(16, "password is too long"),
-  verifyPassword: z
-    .string()
-    .min(8, "password is too short")
-    .max(16, "password is too long"),
-});
+// export const changePasswordSchema = z.object({
+//   password: z
+//     .string()
+//     .min(8, "password is too short")
+//     .max(16, "password is too long"),
+//   verifyPassword: z
+//     .string()
+//     .min(8, "password is too short")
+//     .max(16, "password is too long"),
+// });
 
 export const userSchema = z.object({
   id: z.string().min(1),
