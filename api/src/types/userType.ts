@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { signUpSchema } from "../validations/authValidation";
-import { updateUserSchema } from "../validations/userValidation";
+import { updateUserSchema, userSchema } from "../validations/userValidation";
 
 export type CreateUserData = Omit<
   z.infer<typeof signUpSchema>,
@@ -8,3 +8,5 @@ export type CreateUserData = Omit<
 >;
 
 export type UpdateUserData = z.infer<typeof updateUserSchema>;
+
+export type UserData = z.infer<typeof userSchema>;
