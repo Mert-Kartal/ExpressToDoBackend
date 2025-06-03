@@ -1,4 +1,3 @@
-import { Todo } from "@prisma/client";
 import prisma from "../config/db";
 import {
   CreateCategoryData,
