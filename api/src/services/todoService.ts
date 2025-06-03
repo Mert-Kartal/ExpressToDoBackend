@@ -1,5 +1,5 @@
 import { TodoRepository } from "../repositories/TodoRepository";
-import { CreateTodoData, UpdateTodoData } from "../types/todoType";
+import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 export class TodoService {
   static async getTodos() {
     try {

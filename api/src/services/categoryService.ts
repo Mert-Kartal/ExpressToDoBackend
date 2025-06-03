@@ -1,5 +1,5 @@
 import { CategoryRepository } from "../repositories/CategoryRepository";
-import { CreateCategoryData, UpdateCategoryData } from "../types/categoryType";
+import { CreateCategoryData, UpdateCategoryData } from "../model/categoryType";
 export class CategoryService {
   static async getCategories() {
     try {

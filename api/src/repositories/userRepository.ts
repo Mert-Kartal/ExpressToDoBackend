@@ -1,5 +1,5 @@
 import prisma from "../config/db";
-import { CreateUserData, UpdateUserData, UserData } from "../types/userType";
+import { CreateUserData, UpdateUserData, UserData } from "../model/userType";
 
 export class UserRepository {
   static async getUsers(): Promise<UserData[]> {

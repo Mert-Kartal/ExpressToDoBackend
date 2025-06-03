@@ -3,7 +3,7 @@ import {
   CreateCategoryData,
   UpdateCategoryData,
   CategoryData,
-} from "../types/categoryType";
+} from "../model/categoryType";
 
 export class CategoryRepository {
   static async getCategories(): Promise<CategoryData[]> {

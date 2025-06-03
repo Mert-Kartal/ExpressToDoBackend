@@ -1,5 +1,5 @@
 import prisma from "../config/db";
-import { CreateTodoData, UpdateTodoData, TodoData } from "../types/todoType";
+import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
 
 export class TodoRepository {
   static async getTodos(): Promise<TodoData[]> {

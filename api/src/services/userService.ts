@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/userRepository";
-import { CreateUserData, UpdateUserData } from "../types/userType";
+import { CreateUserData, UpdateUserData } from "../model/userType";
 
 export class UserService {
   static async getUsers() {
