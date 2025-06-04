@@ -69,7 +69,7 @@ export class TodoRepository {
     });
   }
 
-  static async getTodoStats(): Promise<any> {
+  static async getTodoStats(): Promise<{ _count: { status: number } }> {
     return await prisma.todo.aggregate({
       _count: {
         status: true,
@@ -77,7 +77,7 @@ export class TodoRepository {
     });
   }
 
-  static async getPriorityStats(): Promise<any> {
+  static async getPriorityStats(): Promise<{ _count: { priority: number } }> {
     return await prisma.todo.aggregate({
       _count: {
         priority: true,

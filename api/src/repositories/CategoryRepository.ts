@@ -4,6 +4,7 @@ import {
   UpdateCategoryData,
   CategoryData,
 } from "../model/categoryType";
+import { TodoData } from "../model/todoType";
 
 export class CategoryRepository {
   static async getCategories(): Promise<CategoryData[]> {
@@ -44,7 +45,7 @@ export class CategoryRepository {
     });
   }
 
-  static async getCategoryTodos(id: string) {
+  static async getCategoryTodos(id: string): Promise<{ Todo: TodoData }[]> {
     return await prisma.todoCategory.findMany({
       where: {
         categoryId: id,

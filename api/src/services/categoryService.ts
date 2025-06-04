@@ -15,6 +15,11 @@ export class CategoryService {
     return category;
   }
 
+  static async getCategoryTodos(id: string) {
+    await this.getCategory(id);
+    return await CategoryRepository.getCategoryTodos(id);
+  }
+
   static async createCategory(data: CreateCategoryData) {
     return await CategoryRepository.createCategory(data);
   }
