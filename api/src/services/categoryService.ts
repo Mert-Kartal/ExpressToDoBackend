@@ -1,52 +1,37 @@
 import { CategoryRepository } from "../repositories/CategoryRepository";
 import { CreateCategoryData, UpdateCategoryData } from "../model/categoryType";
+import { AppError } from "../utils/AppError";
+
 export class CategoryService {
   static async getCategories() {
-    try {
-      return await CategoryRepository.getCategories();
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return await CategoryRepository.getCategories();
   }
+
   static async getCategory(id: string) {
-    try {
-      const category = await CategoryRepository.getCategory(id);
-      if (!category) {
-        throw new Error("Category not found");
-      }
-      return category;
-    } catch (error) {
-      console.log(error);
-      throw error;
+    const category = await CategoryRepository.getCategory(id);
+    if (!category) {
+      throw new AppError("Category not found", 404);
     }
+    return category;
   }
+
   static async createCategory(data: CreateCategoryData) {
-    try {
-      return await CategoryRepository.createCategory(data);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return await CategoryRepository.createCategory(data);
   }
+
   static async updateCategory(id: string, data: UpdateCategoryData) {
-    try {
-      const category = await CategoryRepository.updateCategory(id, data);
-      if (!category) {
-        throw new Error("Category not found");
-      }
-      return category;
-    } catch (error) {
-      console.log(error);
-      throw error;
+    const category = await CategoryRepository.updateCategory(id, data);
+    if (!category) {
+      throw new AppError("Category not found", 404);
     }
+    return category;
   }
+
   static async deleteCategory(id: string) {
-    try {
-      return await CategoryRepository.deleteCategory(id);
-    } catch (error) {
-      console.log(error);
-      throw error;
+    const result = await CategoryRepository.deleteCategory(id);
+    if (!result) {
+      throw new AppError("Category not found", 404);
     }
+    return result;
   }
 }

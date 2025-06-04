@@ -1,73 +1,48 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { NextFunction, Request, Response } from "express";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError } from "zod";
-
-interface CustomError extends Error {
-  statusCode?: number;
-}
+import { AppError } from "../utils/AppError";
+import { errorResponse } from "../utils/response";
 
 export const errorHandler = (
-  error: CustomError | ZodError | PrismaClientKnownRequestError,
+  error: Error | AppError | ZodError | PrismaClientKnownRequestError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  let statusCode = 500;
-  let message = "Sunucu hatası oluştu";
-  let errors: any[] = [];
+  console.error("Error:", error);
 
-  // Zod validation hatası
-  if (error instanceof ZodError) {
-    statusCode = 400;
-    message = "Doğrulama hatası";
-    errors = error.errors.map((err: any) => ({
-      field: err.path.join("."),
-      message: err.message,
-    }));
+  // AppError handling
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json(errorResponse(error.message));
   }
-  // Prisma hatası
-  else if (error instanceof PrismaClientKnownRequestError) {
-    statusCode = 400;
-    
+
+  // Zod validation error
+  if (error instanceof ZodError) {
+    return res
+      .status(400)
+      .json(errorResponse("Validation error", error.errors));
+  }
+
+  // Prisma error
+  if (error instanceof PrismaClientKnownRequestError) {
     switch (error.code) {
       case "P2002":
-        message = "Bu kayıt zaten mevcut";
-        errors = [{ field: "unique", message: "Benzersiz alan ihlali" }];
-        break;
+        return res
+          .status(400)
+          .json(errorResponse("Unique constraint violation"));
       case "P2025":
-        statusCode = 404;
-        message = "Kayıt bulunamadı";
-        break;
-      case "P2003":
-        message = "İlişkili kayıt bulunamadı";
-        break;
+        return res.status(404).json(errorResponse("Record not found"));
       default:
-        message = "Veritabanı hatası";
+        return res.status(500).json(errorResponse("Database error"));
     }
   }
-  // Custom error
-  else if (error.statusCode) {
-    statusCode = error.statusCode;
-    message = error.message;
-  }
-  // Genel hata
-  else {
-    message = error.message || "Bilinmeyen hata";
-  }
 
-  // Hata yanıtını döndür
-  res.status(statusCode).json({
-    status: "error",
-    message,
-    ...(errors.length > 0 && { errors }),
-    ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
-  });
+  // Default error
+  return res.status(500).json(errorResponse("Internal server error"));
 };
 
 // 404 handler
 export const notFoundHandler = (req: Request, res: Response) => {
-  res.status(404).json({
-    status: "error",
-    message: `${req.originalUrl} endpoint'i bulunamadı`,
-  });
+  res.status(404).json(errorResponse(`Route ${req.originalUrl} not found`));
 };

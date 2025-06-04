@@ -1,4 +1,5 @@
 import prisma from "../config/db";
+import { Status } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
 
 export class TodoRepository {
@@ -31,6 +32,17 @@ export class TodoRepository {
     });
   }
 
+  static async updateTodoStatus(id: string, status: Status): Promise<TodoData> {
+    return await prisma.todo.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+  }
+
   static async deleteTodo(id: string): Promise<TodoData> {
     return await prisma.todo.update({
       where: {
@@ -38,6 +50,37 @@ export class TodoRepository {
       },
       data: {
         deletedAt: new Date(),
+      },
+    });
+  }
+
+  static async searchTodos(query: string): Promise<TodoData[]> {
+    return await prisma.todo.findMany({
+      where: {
+        AND: [
+          {
+            title: {
+              contains: query,
+            },
+          },
+        ],
+        deletedAt: null,
+      },
+    });
+  }
+
+  static async getTodoStats(): Promise<any> {
+    return await prisma.todo.aggregate({
+      _count: {
+        status: true,
+      },
+    });
+  }
+
+  static async getPriorityStats(): Promise<any> {
+    return await prisma.todo.aggregate({
+      _count: {
+        priority: true,
       },
     });
   }

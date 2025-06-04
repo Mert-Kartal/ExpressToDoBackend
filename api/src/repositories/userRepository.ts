@@ -15,6 +15,15 @@ export class UserRepository {
     });
   }
 
+  static async getUserByUsername(username: string): Promise<UserData | null> {
+    return await prisma.user.findUnique({
+      where: {
+        username,
+        deletedAt: null,
+      },
+    });
+  }
+
   static async createUser(data: CreateUserData): Promise<UserData> {
     return await prisma.user.create({
       data,
