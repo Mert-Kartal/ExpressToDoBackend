@@ -12,6 +12,7 @@ const router = Router();
 router.get("/", TodoController.getTodos);
 
 // Search todos
+router.get("/search", TodoController.searchTodos);
 
 // Get a single todo by id
 router.get("/:id", validateId, TodoController.getTodo);
@@ -32,7 +33,5 @@ router.patch("/:id/status", validateId, TodoController.updateTodoStatus);
 
 // Delete a todo
 router.delete("/:id", validateId, TodoController.deleteTodo);
-
-router.get("/search", TodoController.searchTodos);
 
 export default router;
