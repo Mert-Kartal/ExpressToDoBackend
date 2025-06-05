@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { validateBody, validateId } from "../middlewares/validator";
+import { authenticate, requireAdmin } from "../middlewares/authentication";
 import {
   createCategorySchema,
   updateCategorySchema,
@@ -7,32 +8,33 @@ import {
 import { CategoryController } from "../controllers/categoryController";
 
 const router = Router();
+router.use(authenticate);
+// Public routes - only authentication required
+router.get("/", CategoryController.getCategories);
+router.get("/:id", validateId, CategoryController.getCategory);
+router.get("/:id/todos", validateId, CategoryController.getCategoryTodos);
 
-// Create a new category
+// Admin only routes
 router.post(
   "/",
+  requireAdmin,
   validateBody(createCategorySchema),
   CategoryController.createCategory
 );
 
-// Get all categories
-router.get("/", CategoryController.getCategories);
-
-// Get a specific category by ID
-router.get("/:id", validateId, CategoryController.getCategory);
-
-// Update a category
 router.patch(
   "/:id",
+  requireAdmin,
   validateId,
   validateBody(updateCategorySchema),
   CategoryController.updateCategory
 );
 
-// Delete a category
-router.delete("/:id", validateId, CategoryController.deleteCategory);
-
-// Get all todos of a category
-router.get("/:id/todos", validateId, CategoryController.getCategoryTodos);
+router.delete(
+  "/:id",
+  requireAdmin,
+  validateId,
+  CategoryController.deleteCategory
+);
 
 export default router;

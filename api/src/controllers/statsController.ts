@@ -5,7 +5,8 @@ import { successResponse } from "../utils/response";
 export class StatsController {
   static async getTodoStats(req: Request, res: Response, next: NextFunction) {
     try {
-      const stats = await TodoService.getTodoStats();
+      const userId = req.user!.id;
+      const stats = await TodoService.getTodoStats(userId);
       res.status(200).json(successResponse(stats));
     } catch (error) {
       next(error);
@@ -18,7 +19,8 @@ export class StatsController {
     next: NextFunction
   ) {
     try {
-      const stats = await TodoService.getPriorityStats();
+      const userId = req.user!.id;
+      const stats = await TodoService.getPriorityStats(userId);
       res.status(200).json(successResponse(stats));
     } catch (error) {
       next(error);

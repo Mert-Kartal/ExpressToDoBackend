@@ -15,14 +15,6 @@ export class UserService {
     return user;
   }
 
-  static async getUserByEmail(username: string) {
-    const user = await UserRepository.getUserByUsername(username);
-    if (!user) {
-      throw new AppError("User not found", 404);
-    }
-    return user;
-  }
-
   static async updateUser(id: string, data: UpdateUserData) {
     const user = await UserRepository.updateUser(id, data);
     if (!user) {

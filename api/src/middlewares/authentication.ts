@@ -18,6 +18,7 @@ declare global {
         id: string;
         username: string;
         name: string;
+        role: "ADMIN" | "USER";
       };
     }
   }
@@ -74,6 +75,7 @@ export const authenticate = async (
       id: user.id,
       username: user.username,
       name: user.name,
+      role: user.role,
     };
 
     next();
@@ -117,7 +119,7 @@ export const optionalAuth = async (
   await authenticate(req, res, next);
 };
 
-// Admin kontrolü için middleware (gelecekte kullanılabilir)
+// Admin kontrolü için middleware
 export const requireAdmin = (
   req: Request,
   res: Response,
@@ -132,7 +134,14 @@ export const requireAdmin = (
     return;
   }
 
-  // Admin kontrolü burada yapılabilir
-  // Şu an için basit bir kontrol
+  // Admin kontrolü
+  if (req.user.role !== "ADMIN") {
+    res.status(403).json({
+      status: "error",
+      message: "Bu işlem için admin yetkisi gerekli",
+    });
+    return;
+  }
+
   next();
 };

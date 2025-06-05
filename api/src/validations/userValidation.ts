@@ -39,6 +39,7 @@ export const userSchema = z.object({
     .string()
     .min(8, "password is too short")
     .max(16, "password is too long"),
+  role: z.enum(["ADMIN", "USER"]),
   createdAt: z.date(),
   updatedAt: z.date(),
   deletedAt: z.date().nullable(),
