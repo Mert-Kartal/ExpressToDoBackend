@@ -1,4 +1,4 @@
-import { CategoryRepository } from "../repositories/CategoryRepository";
+import { CategoryRepository } from "../repositories/categoryRepository";
 import { CreateCategoryData, UpdateCategoryData } from "../model/categoryType";
 import { AppError } from "../utils/AppError";
 

@@ -1,4 +1,4 @@
-import { TodoRepository } from "../repositories/TodoRepository";
+import { TodoRepository } from "../repositories/todoRepository";
 import { Status } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { AppError } from "../utils/AppError";
