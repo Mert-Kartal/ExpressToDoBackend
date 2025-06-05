@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { errorHandler, notFoundHandler } from "../middlewares/errorHandler";
+import { globalLimiter, authLimiter } from "../middlewares/rateLimiter";
 import todoRoutes from "../routes/todoRoutes";
 import statsRoutes from "../routes/statsRoutes";
 import categoryRoutes from "../routes/categoryRoutes";
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
+app.use(globalLimiter);
 
 // Root route
 app.get("/", (req, res) => {
@@ -23,7 +25,7 @@ app.get("/", (req, res) => {
 app.use("/api/todos", todoRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/categories", categoryRoutes);
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authLimiter, authRouter);
 
 // 404 handler - must be after all routes
 app.use(notFoundHandler);

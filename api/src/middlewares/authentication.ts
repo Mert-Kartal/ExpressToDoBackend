@@ -40,7 +40,7 @@ export const authenticate = async (
     if (!authHeader) {
       res.status(401).json({
         status: "error",
-        message: "Yetkilendirme token'ı gerekli",
+        message: "Authorization token required",
       });
       return;
     }
@@ -51,7 +51,7 @@ export const authenticate = async (
     if (!token) {
       res.status(401).json({
         status: "error",
-        message: "Geçerli token formatı: Bearer <token>",
+        message: "Valid token format: Bearer <token>",
       });
       return;
     }
@@ -65,7 +65,7 @@ export const authenticate = async (
     if (!user) {
       res.status(401).json({
         status: "error",
-        message: "Kullanıcı bulunamadı",
+        message: "User not found",
       });
       return;
     }
@@ -84,7 +84,7 @@ export const authenticate = async (
     if (error instanceof jwt.JsonWebTokenError) {
       res.status(401).json({
         status: "error",
-        message: "Geçersiz token",
+        message: "Invalid token",
       });
       return;
     }
@@ -92,7 +92,7 @@ export const authenticate = async (
     if (error instanceof jwt.TokenExpiredError) {
       res.status(401).json({
         status: "error",
-        message: "Token süresi dolmuş",
+        message: "Token expired",
       });
       return;
     }
@@ -129,7 +129,7 @@ export const requireAdmin = (
   if (!req.user) {
     res.status(401).json({
       status: "error",
-      message: "Kimlik doğrulama gerekli",
+      message: "Authentication required",
     });
     return;
   }
@@ -138,7 +138,7 @@ export const requireAdmin = (
   if (req.user.role !== "ADMIN") {
     res.status(403).json({
       status: "error",
-      message: "Bu işlem için admin yetkisi gerekli",
+      message: "Admin privileges required for this operation",
     });
     return;
   }
