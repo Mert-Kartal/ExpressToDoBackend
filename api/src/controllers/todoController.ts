@@ -7,7 +7,7 @@ import { successResponse } from "../utils/response";
 export class TodoController {
   static async getTodos(req: Request, res: Response, next: NextFunction) {
     try {
-      const todos = await TodoService.getTodos();
+      const todos = await TodoService.getTodos(req.user!.id);
       res.status(200).json(successResponse(todos));
     } catch (error) {
       next(error);
@@ -21,7 +21,7 @@ export class TodoController {
   ) {
     try {
       const id = req.params.id;
-      const todo = await TodoService.getTodo(id);
+      const todo = await TodoService.getTodo(id, req.user!.id);
       res.status(200).json(successResponse(todo));
     } catch (error) {
       next(error);
@@ -35,7 +35,7 @@ export class TodoController {
   ) {
     try {
       const data = req.body;
-      const todo = await TodoService.createTodo(data);
+      const todo = await TodoService.createTodo(data, req.user!.id);
       res.status(201).json(successResponse(todo, "Todo created successfully"));
     } catch (error) {
       next(error);
@@ -50,7 +50,7 @@ export class TodoController {
     try {
       const id = req.params.id;
       const data = req.body;
-      const todo = await TodoService.updateTodo(id, data);
+      const todo = await TodoService.updateTodo(id, data, req.user!.id);
       res.status(200).json(successResponse(todo, "Todo updated successfully"));
     } catch (error) {
       next(error);
@@ -65,7 +65,7 @@ export class TodoController {
     try {
       const id = req.params.id;
       const { status } = req.body;
-      const todo = await TodoService.updateTodoStatus(id, status);
+      const todo = await TodoService.updateTodoStatus(id, status, req.user!.id);
       res
         .status(200)
         .json(successResponse(todo, "Todo status updated successfully"));
@@ -81,7 +81,7 @@ export class TodoController {
   ) {
     try {
       const id = req.params.id;
-      await TodoService.deleteTodo(id);
+      await TodoService.deleteTodo(id, req.user!.id);
       res.status(204).send();
     } catch (error) {
       next(error);
@@ -95,7 +95,7 @@ export class TodoController {
   ) {
     try {
       const { query } = req.query;
-      const todos = await TodoService.searchTodos(query);
+      const todos = await TodoService.searchTodos(query, req.user!.id);
       res.status(200).json(successResponse(todos));
     } catch (error) {
       next(error);

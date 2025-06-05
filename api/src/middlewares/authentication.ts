@@ -31,39 +31,42 @@ export const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     // Authorization header'ını kontrol et
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader) {
-      return res.status(401).json({
+      res.status(401).json({
         status: "error",
         message: "Yetkilendirme token'ı gerekli",
       });
+      return;
     }
 
     // Bearer token formatını kontrol et
     const token = authHeader.split(" ")[1]; // "Bearer TOKEN" formatından TOKEN'ı al
-    
+
     if (!token) {
-      return res.status(401).json({
+      res.status(401).json({
         status: "error",
         message: "Geçerli token formatı: Bearer <token>",
       });
+      return;
     }
 
     // JWT token'ı doğrula
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    
+
     // Kullanıcının hala var olup olmadığını kontrol et
     const user = await UserRepository.getUser(decoded.userId);
-    
+
     if (!user) {
-      return res.status(401).json({
+      res.status(401).json({
         status: "error",
         message: "Kullanıcı bulunamadı",
       });
+      return;
     }
 
     // Kullanıcı bilgilerini request'e ekle
@@ -77,17 +80,19 @@ export const authenticate = async (
   } catch (error) {
     // JWT hatası
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({
+      res.status(401).json({
         status: "error",
         message: "Geçersiz token",
       });
+      return;
     }
-    
+
     if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({
+      res.status(401).json({
         status: "error",
         message: "Token süresi dolmuş",
       });
+      return;
     }
 
     // Diğer hatalar
@@ -100,15 +105,16 @@ export const optionalAuth = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader) {
-    return next(); // Token yoksa devam et
+    next(); // Token yoksa devam et
+    return;
   }
 
   // Token varsa authenticate middleware'ini çalıştır
-  return authenticate(req, res, next);
+  await authenticate(req, res, next);
 };
 
 // Admin kontrolü için middleware (gelecekte kullanılabilir)
@@ -116,13 +122,14 @@ export const requireAdmin = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   // Önce authentication kontrolü yapılmalı
   if (!req.user) {
-    return res.status(401).json({
+    res.status(401).json({
       status: "error",
       message: "Kimlik doğrulama gerekli",
     });
+    return;
   }
 
   // Admin kontrolü burada yapılabilir

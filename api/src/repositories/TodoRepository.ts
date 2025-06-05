@@ -3,39 +3,57 @@ import { Status } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
 
 export class TodoRepository {
-  static async getTodos(): Promise<TodoData[]> {
-    return await prisma.todo.findMany({ where: { deletedAt: null } });
-  }
-
-  static async getTodo(id: string): Promise<TodoData | null> {
-    return await prisma.todo.findUnique({
+  static async getTodos(userId: string): Promise<TodoData[]> {
+    return await prisma.todo.findMany({
       where: {
-        id,
+        userId,
         deletedAt: null,
       },
     });
   }
 
-  static async createTodo(data: CreateTodoData): Promise<TodoData> {
+  static async getTodo(id: string, userId: string): Promise<TodoData | null> {
+    return await prisma.todo.findUnique({
+      where: {
+        id,
+        userId,
+        deletedAt: null,
+      },
+    });
+  }
+
+  static async createTodo(
+    data: CreateTodoData & { userId: string }
+  ): Promise<TodoData> {
     return await prisma.todo.create({
       data,
     });
   }
 
-  static async updateTodo(id: string, data: UpdateTodoData): Promise<TodoData> {
+  static async updateTodo(
+    id: string,
+    data: UpdateTodoData,
+    userId: string
+  ): Promise<TodoData> {
     return await prisma.todo.update({
       where: {
         id,
+        userId,
         deletedAt: null,
       },
       data,
     });
   }
 
-  static async updateTodoStatus(id: string, status: Status): Promise<TodoData> {
+  static async updateTodoStatus(
+    id: string,
+    status: Status,
+    userId: string
+  ): Promise<TodoData> {
     return await prisma.todo.update({
       where: {
         id,
+        userId,
       },
       data: {
         status,
@@ -43,10 +61,11 @@ export class TodoRepository {
     });
   }
 
-  static async deleteTodo(id: string): Promise<TodoData> {
+  static async deleteTodo(id: string, userId: string): Promise<TodoData> {
     return await prisma.todo.update({
       where: {
         id,
+        userId,
       },
       data: {
         deletedAt: new Date(),
@@ -54,7 +73,7 @@ export class TodoRepository {
     });
   }
 
-  static async searchTodos(query: string): Promise<TodoData[]> {
+  static async searchTodos(query: string, userId: string): Promise<TodoData[]> {
     return await prisma.todo.findMany({
       where: {
         AND: [
@@ -63,22 +82,37 @@ export class TodoRepository {
               contains: query,
             },
           },
+          {
+            userId,
+          },
         ],
         deletedAt: null,
       },
     });
   }
 
-  static async getTodoStats(): Promise<{ _count: { status: number } }> {
+  static async getTodoStats(
+    userId: string
+  ): Promise<{ _count: { status: number } }> {
     return await prisma.todo.aggregate({
+      where: {
+        userId,
+        deletedAt: null,
+      },
       _count: {
         status: true,
       },
     });
   }
 
-  static async getPriorityStats(): Promise<{ _count: { priority: number } }> {
+  static async getPriorityStats(
+    userId: string
+  ): Promise<{ _count: { priority: number } }> {
     return await prisma.todo.aggregate({
+      where: {
+        userId,
+        deletedAt: null,
+      },
       _count: {
         priority: true,
       },

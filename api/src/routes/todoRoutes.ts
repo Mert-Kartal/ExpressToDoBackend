@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { validateBody, validateId } from "../middlewares/validator";
+import { authenticate } from "../middlewares/authentication";
 import {
   createTodoSchema,
   updateTodoSchema,
@@ -7,6 +8,9 @@ import {
 import { TodoController } from "../controllers/todoController";
 
 const router = Router();
+
+// Apply authentication middleware to all routes
+router.use(authenticate);
 
 // Get all todos
 router.get("/", TodoController.getTodos);
