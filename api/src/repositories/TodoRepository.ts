@@ -1,5 +1,5 @@
 import prisma from "../config/db";
-import { Status, Priority } from "@prisma/client";
+import { Status, Priority, Prisma } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
 import {
   PaginationOptions,
@@ -106,22 +106,57 @@ export class TodoRepository {
     });
   }
 
-  static async searchTodos(query: string, userId: string): Promise<TodoData[]> {
-    return await prisma.todo.findMany({
-      where: {
-        AND: [
-          {
-            title: {
-              contains: query,
+  static async searchTodos(
+    query: string,
+    userId: string,
+    options: PaginationOptions
+  ): Promise<PaginatedResponse<TodoData>> {
+    const { page, limit, sort, order } = options;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.TodoWhereInput = {
+      AND: [
+        {
+          OR: [
+            {
+              title: {
+                contains: query,
+                mode: Prisma.QueryMode.insensitive,
+              },
             },
+            {
+              description: {
+                contains: query,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          ],
+        },
+        {
+          userId,
+        },
+      ],
+      deletedAt: null,
+    };
+
+    const [total, data] = await Promise.all([
+      prisma.todo.count({ where }),
+      prisma.todo.findMany({
+        where,
+        skip,
+        take: limit,
+        ...(sort && {
+          orderBy: {
+            [sort]: order,
           },
-          {
-            userId,
-          },
-        ],
-        deletedAt: null,
-      },
-    });
+        }),
+      }),
+    ]);
+
+    return {
+      data,
+      meta: calculatePagination(total, page, limit),
+    };
   }
 
   static async getTodoStats(

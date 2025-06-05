@@ -120,13 +120,35 @@ export class TodoController {
   }
 
   static async searchTodos(
-    req: Request<{}, {}, {}, { query: string }>,
+    req: Request<
+      {},
+      {},
+      {},
+      {
+        query: string;
+        page?: string;
+        limit?: string;
+        sort?: string;
+        order?: "asc" | "desc";
+      }
+    >,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { query } = req.query;
-      const todos = await TodoService.searchTodos(query, req.user!.id);
+      const {
+        query,
+        page = "1",
+        limit = "10",
+        sort,
+        order = "asc",
+      } = req.query;
+      const todos = await TodoService.searchTodos(query, req.user!.id, {
+        page: parseInt(page),
+        limit: Math.min(parseInt(limit), 50),
+        sort,
+        order,
+      });
       res.status(200).json(successResponse(todos));
     } catch (error) {
       next(error);

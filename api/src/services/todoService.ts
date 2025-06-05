@@ -54,8 +54,17 @@ export class TodoService {
     return result;
   }
 
-  static async searchTodos(query: string, userId: string) {
-    return await TodoRepository.searchTodos(query, userId);
+  static async searchTodos(
+    query: string,
+    userId: string,
+    options: {
+      page: number;
+      limit: number;
+      sort?: string;
+      order?: "asc" | "desc";
+    }
+  ) {
+    return await TodoRepository.searchTodos(query, userId, options);
   }
 
   static async getTodoStats(userId: string) {
