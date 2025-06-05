@@ -20,7 +20,7 @@ export const errorHandler = (
   // Zod validation error
   if (error instanceof ZodError) {
     return res
-      .status(400)
+      .status(422)
       .json(errorResponse("Validation error", error.errors));
   }
 
