@@ -1,11 +1,21 @@
 import { TodoRepository } from "../repositories/todoRepository";
-import { Status } from "@prisma/client";
+import { Status, Priority } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { AppError } from "../utils/AppError";
 
 export class TodoService {
-  static async getTodos(userId: string) {
-    return await TodoRepository.getTodos(userId);
+  static async getTodos(
+    userId: string,
+    options: {
+      page: number;
+      limit: number;
+      sort?: string;
+      order?: "asc" | "desc";
+      status?: Status;
+      priority?: Priority;
+    }
+  ) {
+    return await TodoRepository.getTodos(userId, options);
   }
 
   static async getTodo(id: string, userId: string) {

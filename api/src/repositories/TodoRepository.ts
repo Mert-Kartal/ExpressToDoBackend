@@ -1,15 +1,48 @@
 import prisma from "../config/db";
-import { Status } from "@prisma/client";
+import { Status, Priority } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData, TodoData } from "../model/todoType";
+import {
+  PaginationOptions,
+  PaginatedResponse,
+  calculatePagination,
+} from "../utils/pagination";
 
 export class TodoRepository {
-  static async getTodos(userId: string): Promise<TodoData[]> {
-    return await prisma.todo.findMany({
-      where: {
-        userId,
-        deletedAt: null,
-      },
-    });
+  static async getTodos(
+    userId: string,
+    options: PaginationOptions & {
+      status?: Status;
+      priority?: Priority;
+    }
+  ): Promise<PaginatedResponse<TodoData>> {
+    const { page, limit, sort, order, status, priority } = options;
+    const skip = (page - 1) * limit;
+
+    const where = {
+      userId,
+      deletedAt: null,
+      ...(status && { status }),
+      ...(priority && { priority }),
+    };
+
+    const [total, data] = await Promise.all([
+      prisma.todo.count({ where }),
+      prisma.todo.findMany({
+        where,
+        skip,
+        take: limit,
+        ...(sort && {
+          orderBy: {
+            [sort]: order,
+          },
+        }),
+      }),
+    ]);
+
+    return {
+      data,
+      meta: calculatePagination(total, page, limit),
+    };
   }
 
   static async getTodo(id: string, userId: string): Promise<TodoData | null> {

@@ -1,13 +1,44 @@
 import { Request, Response, NextFunction } from "express";
 import { TodoService } from "../services/todoService";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
-import { Status } from "@prisma/client";
+import { Status, Priority } from "@prisma/client";
 import { successResponse } from "../utils/response";
 
 export class TodoController {
-  static async getTodos(req: Request, res: Response, next: NextFunction) {
+  static async getTodos(
+    req: Request<
+      {},
+      {},
+      {},
+      {
+        page?: string;
+        limit?: string;
+        sort?: string;
+        order?: "asc" | "desc";
+        status?: Status;
+        priority?: Priority;
+      }
+    >,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
-      const todos = await TodoService.getTodos(req.user!.id);
+      const {
+        page = "1",
+        limit = "10",
+        sort,
+        order = "asc",
+        status,
+        priority,
+      } = req.query;
+      const todos = await TodoService.getTodos(req.user!.id, {
+        page: parseInt(page),
+        limit: Math.min(parseInt(limit), 50),
+        sort,
+        order,
+        status,
+        priority,
+      });
       res.status(200).json(successResponse(todos));
     } catch (error) {
       next(error);
