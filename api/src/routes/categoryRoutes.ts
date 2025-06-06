@@ -22,7 +22,7 @@ router.post(
   CategoryController.createCategory
 );
 
-router.patch(
+router.put(
   "/:id",
   requireAdmin,
   validateId,

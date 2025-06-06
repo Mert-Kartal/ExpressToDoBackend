@@ -4,7 +4,7 @@ import { authenticate } from "../middlewares/authentication";
 const router = Router();
 
 router.use(authenticate);
-router.get("/todo", StatsController.getTodoStats);
-router.get("/priority", StatsController.getPriorityStats);
+router.get("/todos", StatsController.getTodoStats);
+router.get("/priorities", StatsController.getPriorityStats);
 
 export default router;

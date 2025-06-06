@@ -46,13 +46,17 @@ export class TodoRepository {
   }
 
   static async getTodo(id: string, userId: string): Promise<TodoData | null> {
-    return await prisma.todo.findUnique({
+    const todo = await prisma.todo.findUnique({
       where: {
         id,
         userId,
         deletedAt: null,
       },
+      include: {
+        categories: true,
+      },
     });
+    return todo;
   }
 
   static async createTodo(
