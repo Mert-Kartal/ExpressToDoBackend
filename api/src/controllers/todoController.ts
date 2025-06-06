@@ -155,4 +155,76 @@ export class TodoController {
       next(error);
     }
   }
+
+  static async getTodoCategories(
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const id = req.params.id;
+      const todo = await TodoService.getTodoCategories(id, req.user!.id);
+      res.status(200).json(successResponse(todo));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async createTodoCategory(
+    req: Request<{ id: string }, {}, { categoryId: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const id = req.params.id;
+
+      if (!req.body) {
+        throw new AppError("Request body is required", 400);
+      }
+
+      const { categoryId } = req.body;
+
+      if (!categoryId) {
+        throw new AppError("Category id is required", 400);
+      }
+
+      const todo = await TodoService.createTodoCategory(
+        req.user!.id,
+        id,
+        categoryId
+      );
+      res
+        .status(201)
+        .json(successResponse(todo, "Category added successfully"));
+    } catch (error) {
+      console.error("Create todo category error:", error);
+      next(error);
+    }
+  }
+
+  static async deleteTodoCategory(
+    req: Request<{ id: string }, {}, { categoryId: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const id = req.params.id;
+
+      if (!req.body) {
+        throw new AppError("Request body is required", 400);
+      }
+
+      const { categoryId } = req.body;
+
+      if (!categoryId) {
+        throw new AppError("Category id is required", 400);
+      }
+
+      await TodoService.deleteTodoCategory(req.user!.id, id, categoryId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Delete todo category error:", error);
+      next(error);
+    }
+  }
 }

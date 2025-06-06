@@ -188,4 +188,37 @@ export class TodoRepository {
       },
     });
   }
+
+  static async getTodoCategories(userId: string, id: string) {
+    return await prisma.todo.findUnique({
+      where: {
+        id,
+        userId,
+        deletedAt: null,
+      },
+      include: {
+        categories: true,
+      },
+    });
+  }
+
+  static async createTodoCategory(id: string, categoryId: string) {
+    return await prisma.todoCategory.create({
+      data: {
+        todoId: id,
+        categoryId,
+      },
+    });
+  }
+
+  static async deleteTodoCategory(todoId: string, categoryId: string) {
+    return await prisma.todoCategory.delete({
+      where: {
+        todoId_categoryId: {
+          todoId,
+          categoryId,
+        },
+      },
+    });
+  }
 }

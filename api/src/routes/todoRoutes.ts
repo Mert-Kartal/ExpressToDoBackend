@@ -38,4 +38,13 @@ router.patch("/:id/status", validateId, TodoController.updateTodoStatus);
 // Delete a todo
 router.delete("/:id", validateId, TodoController.deleteTodo);
 
+// Get todo categories
+router.get("/:id/categories", validateId, TodoController.getTodoCategories);
+
+// Create todo category
+router.post("/:id/categories", validateId, TodoController.createTodoCategory);
+
+// Delete todo category
+router.delete("/:id/categories", validateId, TodoController.deleteTodoCategory);
+
 export default router;

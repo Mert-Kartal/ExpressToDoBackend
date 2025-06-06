@@ -2,6 +2,7 @@ import { TodoRepository } from "../repositories/todoRepository";
 import { Status, Priority } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { AppError } from "../utils/AppError";
+import { prisma } from "../db/prisma";
 
 export class TodoService {
   static async getTodos(
@@ -82,5 +83,76 @@ export class TodoService {
 
   static async getPriorityStats(userId: string) {
     return await TodoRepository.getPriorityStats(userId);
+  }
+
+  static async getTodoCategories(todoId: string, userId: string) {
+    const todo = await this.getTodo(todoId, userId);
+    if (!todo) {
+      throw new AppError("Todo not found", 404);
+    }
+    return await TodoRepository.getTodoCategories(todoId);
+  }
+
+  static async createTodoCategory(
+    userId: string,
+    todoId: string,
+    categoryId: string
+  ) {
+    const todo = await this.getTodo(todoId, userId);
+    if (!todo) {
+      throw new AppError("Todo not found", 404);
+    }
+
+    // Check if category exists
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!category) {
+      throw new AppError("Category not found", 404);
+    }
+
+    // Check if relationship already exists
+    const existingRelation = await prisma.todoCategory.findUnique({
+      where: {
+        todoId_categoryId: {
+          todoId,
+          categoryId,
+        },
+      },
+    });
+
+    if (existingRelation) {
+      throw new AppError("This category is already assigned to the todo", 400);
+    }
+
+    return await TodoRepository.createTodoCategory(todoId, categoryId);
+  }
+
+  static async deleteTodoCategory(
+    userId: string,
+    todoId: string,
+    categoryId: string
+  ) {
+    const todo = await this.getTodo(todoId, userId);
+    if (!todo) {
+      throw new AppError("Todo not found", 404);
+    }
+
+    // Check if relationship exists
+    const existingRelation = await prisma.todoCategory.findUnique({
+      where: {
+        todoId_categoryId: {
+          todoId,
+          categoryId,
+        },
+      },
+    });
+
+    if (!existingRelation) {
+      throw new AppError("This category is not assigned to the todo", 404);
+    }
+
+    return await TodoRepository.deleteTodoCategory(todoId, categoryId);
   }
 }
