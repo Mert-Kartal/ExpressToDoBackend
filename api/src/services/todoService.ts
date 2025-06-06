@@ -39,6 +39,15 @@ export class TodoService {
   }
 
   static async updateTodoStatus(id: string, status: Status, userId: string) {
+    if (!Object.values(Status).includes(status)) {
+      throw new AppError(
+        `Invalid status. Allowed values are: ${Object.values(Status).join(
+          ", "
+        )}`,
+        400
+      );
+    }
+
     const todo = await TodoRepository.updateTodoStatus(id, status, userId);
     if (!todo) {
       throw new AppError("Todo not found", 404);
