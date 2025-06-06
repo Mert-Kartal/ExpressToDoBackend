@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { errorHandler, notFoundHandler } from "../middlewares/errorHandler";
 import { globalLimiter, authLimiter } from "../middlewares/rateLimiter";
+import requestLogger from "../middlewares/requestLogger";
 import todoRoutes from "../routes/todoRoutes";
 import statsRoutes from "../routes/statsRoutes";
 import categoryRoutes from "../routes/categoryRoutes";
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(globalLimiter);
+app.use(requestLogger);
 
 // Root route
 app.get("/", (req, res) => {
