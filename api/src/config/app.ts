@@ -8,6 +8,7 @@ import todoRoutes from "../routes/todoRoutes";
 import statsRoutes from "../routes/statsRoutes";
 import categoryRoutes from "../routes/categoryRoutes";
 import authRouter from "../routes/authRoutes";
+import userRoutes from "../routes/userRoutes";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/todos", todoRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authLimiter, authRouter);
+app.use("/api/users", userRoutes);
 
 // 404 handler - must be after all routes
 app.use(notFoundHandler);

@@ -4,14 +4,10 @@ import { CreateUserData } from "../model/userType";
 import { successResponse } from "../utils/response";
 
 export class AuthController {
-  static async signUp(
-    req: Request<{}, {}, CreateUserData>,
-    res: Response,
-    next: NextFunction
-  ) {
+  static async signUp(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = req.body;
-      const { user, token } = await AuthService.createUser(data);
+      const { verifyPassword, ...userData } = req.body;
+      const { user, token } = await AuthService.createUser(userData);
       res
         .status(201)
         .json(successResponse({ user, token }, "User created successfully"));
