@@ -4,7 +4,8 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node src/app.ts"
+    "dev": "ts-node src/app.ts",
+    "prisma:seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -31,5 +32,8 @@
     "jsonwebtoken": "^9.0.2",
     "winston": "^3.17.0",
     "zod": "^3.25.48"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
