@@ -24,8 +24,8 @@ declare global {
   }
 }
 
-// JWT secret key - production'da environment variable'dan alınmalı
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+// JWT secret key - environment variable'dan al
+const JWT_SECRET = process.env.JWT_SECRET_KEY || "your-secret-key";
 
 // Authentication middleware
 export const authenticate = async (
@@ -80,7 +80,6 @@ export const authenticate = async (
 
     next();
   } catch (error) {
-    // JWT hatası
     if (error instanceof jwt.JsonWebTokenError) {
       res.status(401).json({
         status: "error",
@@ -97,7 +96,6 @@ export const authenticate = async (
       return;
     }
 
-    // Diğer hatalar
     next(error);
   }
 };
