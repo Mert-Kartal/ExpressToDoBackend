@@ -134,14 +134,10 @@ export class TodoService {
     }
 
     // Check if relationship exists
-    const existingRelation = await prisma.todoCategory.findUnique({
-      where: {
-        todoId_categoryId: {
-          todoId,
-          categoryId,
-        },
-      },
-    });
+    const existingRelation = await TodoRepository.getTodoCategory(
+      todoId,
+      categoryId
+    );
 
     if (!existingRelation) {
       throw new AppError("This category is not assigned to the todo", 404);
