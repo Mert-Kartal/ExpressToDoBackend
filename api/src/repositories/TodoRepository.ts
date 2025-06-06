@@ -202,6 +202,17 @@ export class TodoRepository {
     });
   }
 
+  static async getTodoCategory(id: string, categoryId: string) {
+    return await prisma.todoCategory.findUnique({
+      where: {
+        todoId_categoryId: {
+          todoId: id,
+          categoryId,
+        },
+      },
+    });
+  }
+
   static async createTodoCategory(id: string, categoryId: string) {
     return await prisma.todoCategory.create({
       data: {

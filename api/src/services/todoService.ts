@@ -2,7 +2,7 @@ import { TodoRepository } from "../repositories/todoRepository";
 import { Status, Priority } from "@prisma/client";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { AppError } from "../utils/AppError";
-import { prisma } from "../db/prisma";
+import { CategoryRepository } from "../repositories/categoryRepository";
 
 export class TodoService {
   static async getTodos(
@@ -90,7 +90,7 @@ export class TodoService {
     if (!todo) {
       throw new AppError("Todo not found", 404);
     }
-    return await TodoRepository.getTodoCategories(todoId);
+    return await TodoRepository.getTodoCategories(userId, todoId);
   }
 
   static async createTodoCategory(
@@ -104,23 +104,17 @@ export class TodoService {
     }
 
     // Check if category exists
-    const category = await prisma.category.findUnique({
-      where: { id: categoryId },
-    });
+    const category = await CategoryRepository.getCategory(categoryId);
 
     if (!category) {
       throw new AppError("Category not found", 404);
     }
 
     // Check if relationship already exists
-    const existingRelation = await prisma.todoCategory.findUnique({
-      where: {
-        todoId_categoryId: {
-          todoId,
-          categoryId,
-        },
-      },
-    });
+    const existingRelation = await TodoRepository.getTodoCategory(
+      todoId,
+      categoryId
+    );
 
     if (existingRelation) {
       throw new AppError("This category is already assigned to the todo", 400);
