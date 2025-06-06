@@ -5,7 +5,7 @@ import {
   adminCreateUserSchema,
   updateUserSchema,
 } from "../validations/userValidation";
-import { validateBody } from "../middlewares/validator";
+import { validateBody, validateId } from "../middlewares/validator";
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.get("/me", UserController.getProfile);
 router.get("/", requireAdmin, UserController.getUsers);
 
 // Get user by id (admin only)
-router.get("/:id", requireAdmin, UserController.getUserById);
+router.get("/:id", requireAdmin, validateId, UserController.getUserById);
 
 // Create user (admin only)
 router.post(
@@ -36,6 +36,7 @@ router.patch("/me", validateBody(updateUserSchema), UserController.updateUser);
 router.patch(
   "/:id",
   requireAdmin,
+  validateId,
   validateBody(updateUserSchema),
   UserController.updateUserById
 );
@@ -44,6 +45,6 @@ router.patch(
 router.delete("/me", UserController.deleteUser);
 
 // Delete user by id (admin only)
-router.delete("/:id", requireAdmin, UserController.deleteUserById);
+router.delete("/:id", requireAdmin, validateId, UserController.deleteUserById);
 
 export default router;
