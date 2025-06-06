@@ -14,12 +14,12 @@ export const globalLimiter = rateLimit({
 
 // Auth rate limiter (login/register için)
 export const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 saat
-  max: 5, // IP başına maksimum istek sayısı
+  windowMs: 15 * 60 * 1000, // 15 dakika
+  max: 20, // IP başına maksimum istek sayısı
   message: {
     status: "error",
     message:
-      "Too many login requests, please try again in 1 hour or contact the admin.",
+      "Too many login requests, please try again in 15 minutes or contact the admin.",
   },
   standardHeaders: true,
   legacyHeaders: false,

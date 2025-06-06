@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthService } from "../services/authService";
-import { CreateUserData } from "../model/userType";
 import { successResponse } from "../utils/response";
 
 export class AuthController {
