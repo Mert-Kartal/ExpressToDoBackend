@@ -3,6 +3,7 @@ import { TodoService } from "../services/todoService";
 import { CreateTodoData, UpdateTodoData } from "../model/todoType";
 import { Status, Priority } from "@prisma/client";
 import { successResponse } from "../utils/response";
+import { AppError } from "../utils/AppError";
 
 export class TodoController {
   static async getTodos(
@@ -125,7 +126,7 @@ export class TodoController {
       {},
       {},
       {
-        query: string;
+        q: string;
         page?: string;
         limit?: string;
         sort?: string;
@@ -136,14 +137,13 @@ export class TodoController {
     next: NextFunction
   ) {
     try {
-      const {
-        query,
-        page = "1",
-        limit = "10",
-        sort,
-        order = "asc",
-      } = req.query;
-      const todos = await TodoService.searchTodos(query, req.user!.id, {
+      const { q, page = "1", limit = "10", sort, order = "asc" } = req.query;
+
+      if (!q) {
+        throw new AppError("Search query is required", 400);
+      }
+
+      const todos = await TodoService.searchTodos(q, req.user!.id, {
         page: parseInt(page),
         limit: Math.min(parseInt(limit), 50),
         sort,
@@ -151,6 +151,7 @@ export class TodoController {
       });
       res.status(200).json(successResponse(todos));
     } catch (error) {
+      console.error("Search error:", error);
       next(error);
     }
   }

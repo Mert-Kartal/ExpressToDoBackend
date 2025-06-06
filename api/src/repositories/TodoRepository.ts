@@ -121,13 +121,11 @@ export class TodoRepository {
             {
               title: {
                 contains: query,
-                mode: Prisma.QueryMode.insensitive,
               },
             },
             {
               description: {
                 contains: query,
-                mode: Prisma.QueryMode.insensitive,
               },
             },
           ],
