@@ -12,6 +12,13 @@ export class UserRepository {
         id,
         deletedAt: null,
       },
+      include: {
+        todos: {
+          where: {
+            deletedAt: null,
+          },
+        },
+      },
     });
   }
 
