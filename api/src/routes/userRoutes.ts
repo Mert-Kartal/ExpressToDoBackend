@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { UserController } from "../controllers/userController";
 import { authenticate, requireAdmin } from "../middlewares/authentication";
-import { updateUserSchema } from "../validations/userValidation";
+import {
+  adminCreateUserSchema,
+  updateUserSchema,
+} from "../validations/userValidation";
 import { validateBody } from "../middlewares/validator";
 
 const router = Router();
@@ -19,7 +22,12 @@ router.get("/", requireAdmin, UserController.getUsers);
 router.get("/:id", requireAdmin, UserController.getUserById);
 
 // Create user (admin only)
-router.post("/", requireAdmin, UserController.createUser);
+router.post(
+  "/",
+  requireAdmin,
+  validateBody(adminCreateUserSchema),
+  UserController.adminCreateUser
+);
 
 // Update user
 router.patch("/me", validateBody(updateUserSchema), UserController.updateUser);

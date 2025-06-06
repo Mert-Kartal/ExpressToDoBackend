@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { UserService } from "../services/userService";
-import { UpdateUserData, CreateUserData } from "../model/userType";
+import {
+  UpdateUserData,
+  CreateUserData,
+  AdminCreateUserData,
+} from "../model/userType";
 import { successResponse } from "../utils/response";
 
 export class UserController {
@@ -99,6 +103,20 @@ export class UserController {
       const { id } = req.params;
       await UserService.deleteUser(id);
       res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async adminCreateUser(
+    req: Request<{}, {}, AdminCreateUserData>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const data = req.body;
+      const user = await UserService.adminCreateUser(data);
+      res.status(201).json(successResponse(user));
     } catch (error) {
       next(error);
     }

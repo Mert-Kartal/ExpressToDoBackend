@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { signUpSchema } from "../validations/authValidation";
-import { updateUserSchema, userSchema } from "../validations/userValidation";
+import {
+  adminCreateUserSchema,
+  updateUserSchema,
+  userSchema,
+} from "../validations/userValidation";
 
 // Kullanıcı rolleri
 export enum Roles {
@@ -18,6 +22,7 @@ export type CreateUserData = Omit<
   role?: UserRole;
 };
 
+export type AdminCreateUserData = z.infer<typeof adminCreateUserSchema>;
 // Kullanıcı güncelleme verisi
 export type UpdateUserData = z.infer<typeof updateUserSchema>;
 

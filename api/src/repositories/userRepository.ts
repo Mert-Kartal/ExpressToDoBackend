@@ -1,5 +1,10 @@
 import prisma from "../config/db";
-import { CreateUserData, UpdateUserData, UserData } from "../model/userType";
+import {
+  AdminCreateUserData,
+  CreateUserData,
+  UpdateUserData,
+  UserData,
+} from "../model/userType";
 
 export class UserRepository {
   static async getUsers(): Promise<UserData[]> {
@@ -53,6 +58,14 @@ export class UserRepository {
       },
       data: {
         deletedAt: new Date(),
+      },
+    });
+  }
+
+  static async adminCreateUser(data: AdminCreateUserData): Promise<UserData> {
+    return await prisma.user.create({
+      data: {
+        ...data,
       },
     });
   }

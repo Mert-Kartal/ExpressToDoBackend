@@ -1,5 +1,9 @@
 import { UserRepository } from "../repositories/userRepository";
-import { UpdateUserData, CreateUserData } from "../model/userType";
+import {
+  UpdateUserData,
+  CreateUserData,
+  AdminCreateUserData,
+} from "../model/userType";
 import { AppError } from "../utils/AppError";
 
 export class UserService {
@@ -37,5 +41,13 @@ export class UserService {
       throw new AppError("User not found", 404);
     }
     return result;
+  }
+
+  static async adminCreateUser(data: AdminCreateUserData) {
+    const user = await UserRepository.adminCreateUser(data);
+    if (!user) {
+      throw new AppError("Failed to create user", 500);
+    }
+    return user;
   }
 }
