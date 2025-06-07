@@ -19,7 +19,7 @@ router.get("/me", UserController.getProfile);
 router.get("/", requireAdmin, UserController.getUsers);
 
 // Get user by id (admin only)
-router.get("/:id", requireAdmin, validateId, UserController.getUserById);
+router.get("/:id", validateId, UserController.getUserById);
 
 // Create user (admin only)
 router.post(
