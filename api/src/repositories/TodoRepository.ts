@@ -36,6 +36,13 @@ export class TodoRepository {
             [sort]: order,
           },
         }),
+        include: {
+          categories: {
+            include: {
+              Category: true,
+            },
+          },
+        },
       }),
     ]);
 
@@ -53,7 +60,11 @@ export class TodoRepository {
         deletedAt: null,
       },
       include: {
-        categories: true,
+        categories: {
+          include: {
+            Category: true,
+          },
+        },
       },
     });
     return todo;
@@ -62,8 +73,24 @@ export class TodoRepository {
   static async createTodo(
     data: CreateTodoData & { userId: string }
   ): Promise<TodoData> {
+    const { category_ids, ...todoData } = data;
+
     return await prisma.todo.create({
-      data,
+      data: {
+        ...todoData,
+        categories: {
+          create: category_ids.map((categoryId) => ({
+            categoryId,
+          })),
+        },
+      },
+      include: {
+        categories: {
+          include: {
+            Category: true,
+          },
+        },
+      },
     });
   }
 
@@ -79,6 +106,13 @@ export class TodoRepository {
         deletedAt: null,
       },
       data,
+      include: {
+        categories: {
+          include: {
+            Category: true,
+          },
+        },
+      },
     });
   }
 
@@ -91,9 +125,17 @@ export class TodoRepository {
       where: {
         id,
         userId,
+        deletedAt: null,
       },
       data: {
         status,
+      },
+      include: {
+        categories: {
+          include: {
+            Category: true,
+          },
+        },
       },
     });
   }
@@ -103,9 +145,17 @@ export class TodoRepository {
       where: {
         id,
         userId,
+        deletedAt: null,
       },
       data: {
         deletedAt: new Date(),
+      },
+      include: {
+        categories: {
+          include: {
+            Category: true,
+          },
+        },
       },
     });
   }
@@ -152,6 +202,13 @@ export class TodoRepository {
             [sort]: order,
           },
         }),
+        include: {
+          categories: {
+            include: {
+              Category: true,
+            },
+          },
+        },
       }),
     ]);
 
@@ -161,10 +218,14 @@ export class TodoRepository {
     };
   }
 
-  static async getTodoStats(
-    userId: string
-  ): Promise<{ _count: { status: number } }> {
-    return await prisma.todo.aggregate({
+  static async getTodoStats(userId: string): Promise<{
+    total: number;
+    completed: number;
+    pending: number;
+    inProgress: number;
+  }> {
+    const stats = await prisma.todo.groupBy({
+      by: ["status"],
       where: {
         userId,
         deletedAt: null,
@@ -173,12 +234,24 @@ export class TodoRepository {
         status: true,
       },
     });
+
+    return {
+      total: stats.reduce((acc, curr) => acc + curr._count.status, 0),
+      completed:
+        stats.find((s) => s.status === "COMPLETED")?._count.status || 0,
+      pending: stats.find((s) => s.status === "PENDING")?._count.status || 0,
+      inProgress:
+        stats.find((s) => s.status === "IN_PROGRESS")?._count.status || 0,
+    };
   }
 
-  static async getPriorityStats(
-    userId: string
-  ): Promise<{ _count: { priority: number } }> {
-    return await prisma.todo.aggregate({
+  static async getPriorityStats(userId: string): Promise<{
+    HIGH: number;
+    MEDIUM: number;
+    LOW: number;
+  }> {
+    const stats = await prisma.todo.groupBy({
+      by: ["priority"],
       where: {
         userId,
         deletedAt: null,
@@ -187,6 +260,12 @@ export class TodoRepository {
         priority: true,
       },
     });
+
+    return {
+      HIGH: stats.find((s) => s.priority === "HIGH")?._count.priority || 0,
+      MEDIUM: stats.find((s) => s.priority === "MEDIUM")?._count.priority || 0,
+      LOW: stats.find((s) => s.priority === "LOW")?._count.priority || 0,
+    };
   }
 
   static async getTodoCategories(userId: string, id: string) {
@@ -197,7 +276,11 @@ export class TodoRepository {
         deletedAt: null,
       },
       include: {
-        categories: true,
+        categories: {
+          include: {
+            Category: true,
+          },
+        },
       },
     });
   }

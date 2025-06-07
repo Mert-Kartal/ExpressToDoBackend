@@ -66,8 +66,11 @@ export class TodoController {
     next: NextFunction
   ) {
     try {
-      const data = req.body;
-      const todo = await TodoService.createTodo(data, req.user!.id);
+      const data = {
+        ...req.body,
+        userId: req.user!.id,
+      };
+      const todo = await TodoService.createTodo(data);
       res.status(201).json(successResponse(todo, "Todo created successfully"));
     } catch (error) {
       next(error);

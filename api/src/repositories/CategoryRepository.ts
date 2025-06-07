@@ -49,9 +49,20 @@ export class CategoryRepository {
     return await prisma.todoCategory.findMany({
       where: {
         categoryId: id,
+        Todo: {
+          deletedAt: null,
+        },
       },
       include: {
-        Todo: true,
+        Todo: {
+          include: {
+            categories: {
+              include: {
+                Category: true,
+              },
+            },
+          },
+        },
       },
     });
   }

@@ -27,8 +27,16 @@ export class TodoService {
     return todo;
   }
 
-  static async createTodo(data: CreateTodoData, userId: string) {
-    return await TodoRepository.createTodo({ ...data, userId });
+  static async createTodo(data: CreateTodoData & { userId: string }) {
+    // Validate categories
+    const { category_ids } = data;
+    for (const categoryId of category_ids) {
+      const category = await CategoryRepository.getCategory(categoryId);
+      if (!category) {
+        throw new AppError(`Category with id ${categoryId} not found`, 404);
+      }
+    }
+    return await TodoRepository.createTodo(data);
   }
 
   static async updateTodo(id: string, data: UpdateTodoData, userId: string) {
